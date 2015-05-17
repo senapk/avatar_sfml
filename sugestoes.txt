@@ -1,0 +1,15 @@
+Que tal tentar aumentar o alcance do hadouken para 2 casas, ou talvez
+tornar pra toda linha.
+Que tal mover a wall a quantidade de casas correspondente à força do hero.
+
+transforma o hadouken em kick
+e cria o hadouken com bola de ferro
+
+cria uma esquiva de dois pra tras
+coloca a mina atrás de si e anda
+	se tiver na frente da parede cai na mina
+
+arrasta a bola de ferro
+	com um botao atira e com o outro puxa
+
+fazer o gerador de eventos
