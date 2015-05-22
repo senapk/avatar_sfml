@@ -2,29 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define _MOVE_
-#define _INPUT_
-
-#define _CREATE_
-#define _CREATE_WALL_
-
-#define _COLIDE_
-#define _COLIDE_WALL_
-
-#define _KICK_
-
-#define _CREATE_TRAP_
-
-#define _COLIDE_TRAP_
-
-#define _CREATE_ENEMY_
-
-#define _COLIDE_ENEMY_
-
-#define _PURSUIT_
-
-#define _UPDATE_MOVE_
-#define _HADOUKEN_
 
 /*
 Requisitos:
@@ -48,6 +25,10 @@ Instruções:
     Você apenas vai precisar editar um arquivo, esse daqui, o "aluno.c".
     Fora isso, você precisará consultar o arquivo "aluno.h". É no aluno.h
     que estão as definições das structs utilizadas.
+
+    Se você encontrar alguma linha como (void) algo, pode remover. Ela só
+    foi adicionada para não ficar aparecendo os warnings de variável não
+    utilizada. Ela não faz absolutamente nada.
 
 Tipos de dados:
 
@@ -132,22 +113,10 @@ Ajuda:
 
 */
 void elem_move(Elemento * el, direcao dir){
-#ifndef _MOVE_
+
     el->xold = el->x;
     if(dir == Left)
         el->x -= 1;
-#else
-    el->xold = el->x;
-    el->yold = el->y;
-    if(dir == Left)
-        el->x -= 1;
-    if(dir == Right)
-        el->x += 1;
-    if(dir == Up)
-        el->y -= 1;
-    if(dir == Down)
-        el->y += 1;
-#endif
 }
 
 /*                           _INPUT_
@@ -188,81 +157,14 @@ Ajuda:
 */
 
 boolean process_input(Elemento * hero, char tecla, Ambiente * amb){
-#ifndef _INPUT_
+    (void) amb;
     if(tecla == 'a'){
         elem_move(hero, Left);
         hero->face = '<';
         return True;
     }
     return False;
-#else
-    if(tecla == 'a'){
-        elem_move(hero, Left);
-        hero->face = '<';
-        return True;
-    }
-    if(tecla == 's'){
-        elem_move(hero, Down);
-        hero->face = 'V';
-        return True;
-    }
-    if(tecla == 'd'){
-        elem_move(hero, Right);
-        hero->face = '>';
-        return True;
-    }
-    if(tecla == 'w'){
-        elem_move(hero, Up);
-        hero->face = 'A';
-        return True;
-    }
-    if(tecla == '.'){
-        elem_move(hero, Stay);
-        return True;
-    }
-#ifdef _CREATE_WALL_
-    if(tecla == ';'){
-        elem_create_wall(hero, amb->wall);
-        return True;
-    }
-#endif //_CREATE_WALL_
 
-#ifdef _KICK_
-    if(tecla == 'k'){
-        elem_kick(hero, amb->wall);
-
-  #ifdef _CREATE_ENEMY_
-        elem_kick(hero, amb->enemy);
-  #endif
-  #ifdef _CREATE_TRAP_
-        elem_kick(hero, amb->trap);
-  #endif//_CREATE_TRAP_
-        return True;
-    }
-#endif
-
-#ifdef _CREATE_TRAP_
-    if(tecla == ','){
-        elem_create_trap(hero, amb->trap);
-        return True;
-    }
-#endif//_CREATE_TRAP_
-
-#ifdef _HADOUKEN_
-    if(tecla == 'h'){
-        elem_hadouken(amb);
-        return True;
-    }
-#endif
-
-#ifdef _CREATE_ENEMY_
-    if(tecla == 'e'){
-        elem_create_enemy(*hero, amb->enemy);
-        return True;
-    }
-#endif
-    return False;
-#endif
 }
 
 /*                           _CREATE_
@@ -291,21 +193,15 @@ Ajuda:
 
 */
 Elemento elem_create(int x, int y, char face, char color, int power){
-#ifndef _CREATE_
+    (void) x;
+    (void) y;
+    (void) face;
+    (void) color;
+    (void) power;
+
     Elemento obj;
     return obj;
-#else
-    Elemento obj;
-    obj.x = x;
-    obj.y = y;
-    obj.face = face;
-    obj.color = color;
-    obj.power = power;
-    obj.exists = True;
-    obj.xold = x;
-    obj.yold = y;
-    return obj;
-#endif
+
 }
 
 /*                           _CREATE_WALL_
@@ -361,12 +257,8 @@ Futuro:
 */
 
 void elem_create_wall(Elemento * hero, Elemento * wall){
-#ifdef _CREATE_WALL_
-    int x = hero->x;
-    int y = hero->y;
-    elem_move(hero, Stay);
-    *wall = elem_create(x, y, '#', 'y', 10);
-#endif
+    (void) hero;
+    (void) wall;
 }
 
 /*                           _COLIDE_
@@ -400,13 +292,10 @@ Futuro:
 
 */
 boolean elem_colide(Elemento um, Elemento dois){
-#ifndef _COLIDE_
+    (void) um;
+    (void) dois;
     return False;
-#else
-    if (um.x == dois.x && um.y == dois.y)
-        return True;
-    return False;
-#endif
+
 }
 
 /*                           _COLIDE_WALL_
@@ -442,15 +331,8 @@ Ajuda:
 */
 
 void elem_colide_wall(Elemento *elem, Elemento wall){
-#ifdef _COLIDE_WALL_
-    if(elem->exists && wall.exists){
-        if(elem->x == wall.x && elem->y == wall.y){
-            elem->x = elem->xold;
-            elem->y = elem->yold;
-        }
-    }
-
-#endif// _COLIDE_WALL_
+    (void) elem;
+    (void) wall;
 }
 
 /*                           _INTERACTIONS_
@@ -482,28 +364,12 @@ Ajuda:
 void process_interactions(Ambiente * amb){
 
     //funcoes de movimento
-#ifdef _PURSUIT_
-    elem_pursuit(*amb->hero, amb->enemy);
-#endif
+
 
     elem_colide_wall(amb->hero, *amb->wall);
 
     //funcoes que consolidam movimento dos personagens
-#ifdef _COLIDE_TRAP_
-    elem_colide_trap(amb->hero, amb->trap);
-#endif
 
-#ifdef _CREATE_ENEMY_
-    elem_colide_wall(amb->enemy, *amb->wall);
-    elem_colide_trap(amb->enemy, amb->trap);
-#endif
-#ifdef _COLIDE_ENEMY_
-    elem_colide_enemy(amb->hero, *amb->enemy);
-#endif
-
-#ifdef _UPDATE_MOVE_
-    update_move(amb);
-#endif
 
 }
 
@@ -551,34 +417,8 @@ Ajuda:
 */
 
 void elem_kick(Elemento *hero, Elemento *obst){
-#ifdef _KICK_
-    int dx = hero->x - obst->x;
-    int dy = hero->y - obst->y;
-    boolean acertou = True;
-    if((abs(dx) == 1 && abs(dy) == 0) || (abs(dx) == 0 && abs(dy) == 1)){
-        if(dx == 1 && hero->face == '<'){
-            elem_move(obst, Left);
-        }
-        else if(dx == -1 && hero->face == '>'){
-            elem_move(obst, Right);
-        }
-        else if(dy == 1 && hero->face == 'A'){
-            elem_move(obst, Up);
-        }
-        else if(dy == -1 && hero->face == 'V'){
-            elem_move(obst, Down);
-        }
-        else{
-            acertou = False;
-        }
-        if(acertou){
-            obst->power -= 1;
-            if(obst->power == 0){
-                obst->exists = False;
-            }
-        }
-    }
-#endif //_KICK_
+    (void) hero;
+    (void) obst;
 }
 
 /*                           _CREATE_TRAP_
@@ -625,21 +465,8 @@ Ajuda:
 */
 
 void elem_create_trap(Elemento * hero, Elemento * trap){
-#ifdef _CREATE_TRAP_
-    int x = hero->x;
-    int y = hero->y;
-    int f = rand() % 6 + 5;
-    elem_move(hero, Stay);
-    if(hero->face == '>'){
-        *trap = elem_create(x - 1, y, '!', 'w', f);
-    }else if(hero->face == '<'){
-        *trap = elem_create(x + 1, y, '!', 'w', f);
-    }else if(hero->face == 'A'){
-        *trap = elem_create(x, y + 1, '!', 'w', f);
-    }else if(hero->face == 'V'){
-        *trap = elem_create(x, y - 1, '!', 'w', f);
-    }
-#endif
+    (void) hero;
+    (void) trap;
 }
 
 /*                           _COLIDE_TRAP_
@@ -680,18 +507,8 @@ Ajuda:
     Te vira!
 */
 void elem_colide_trap(Elemento *elem, Elemento *trap){
-#ifdef _COLIDE_TRAP_
-    if(trap->exists && elem->exists){
-        if(elem->xold == trap->x && elem->yold == trap->y){
-            elem->x = elem->xold;
-            elem->y = elem->yold;
-            trap->power -= 1;
-            elem->power -= 1;
-            if(trap->power == 0)
-                trap->exists = False;
-        }
-    }
-#endif//_COLIDE_TRAP_
+    (void) elem;
+    (void) trap;
 }
 
 /*                           _CREATE_ENEMY_
@@ -737,12 +554,8 @@ Ajuda:
 
 */
 void elem_create_enemy(Elemento hero, Elemento *enemy){
-#ifdef _CREATE_ENEMY_
-    int x = rand() % 11 - 5 + hero.x;
-    int y = rand() % 11 - 5 + hero.y;
-    int f = rand() % 51 + 50;
-    *enemy = elem_create(x, y, 'E', 'c', f);
-#endif
+    (void) hero;
+    (void) enemy;
 }
 
 
@@ -796,31 +609,8 @@ Ajuda:
 
 */
 void elem_pursuit(Elemento hero, Elemento * enemy){
-#ifdef _PURSUIT_
-    enemy->xold = enemy->x;
-    enemy->yold = enemy->y;
-
-    if(enemy->x < hero.x)
-        enemy->x += 1;
-    else if (enemy->x > hero.x)
-        enemy->x -= 1;
-    else{
-        if(rand()%2 == 0)
-            enemy->x += 1;
-        else
-            enemy->x -= 1;
-    }
-    if(enemy->y < hero.y)
-        enemy->y += 1;
-    else if(enemy->y > hero.y)
-        enemy->y -= 1;
-    else{
-        if(rand()%2 == 0)
-            enemy->y += 1;
-        else
-            enemy->y -= 1;
-    }
-#endif
+    (void) hero;
+    (void) enemy;
 }
 
 
@@ -862,17 +652,8 @@ Ajuda:
 /*
    */
 void elem_colide_enemy(Elemento * hero, Elemento enemy){
-#ifdef _COLIDE_ENEMY_
-    if(!enemy.exists || !hero->exists)
-        return;
-    if(elem_colide(*hero, enemy)){
-        hero->power -= 1;
-        hero->x = rand() % max_colunas;
-        hero->y = rand() % max_linhas;
-        if(hero->power == 0)
-            hero->exists = False;
-    }
-#endif
+    (void) hero;
+    (void) enemy;
 }
 
 /*                           _UPDATE_MOVE_
@@ -913,39 +694,10 @@ Ajuda:
 
     Você acessa o x de hero usando amb->hero->x
 */
-#ifdef _UPDATE_MOVE_
-void update_one(Elemento * el, int dx, int dy){
-    if(!el->exists)
-        return;
-    el->x += dx;
-    el->y += dy;
-    el->xold += dx;
-    el->yold += dy;
-}
-#endif// _UPDATE_MOVE_
+
 
 void update_move(Ambiente * amb){
-#ifdef _UPDATE_MOVE_
-    int x = amb->hero->x;
-    int y = amb->hero->y;
-    int dx = 0;
-    int dy = 0;
-    if(x < 0)
-        dx = 1;
-    else if(x >= max_colunas)
-        dx = -1;
-    if(y < 0)
-        dy = 1;
-    else if(y >= max_linhas)
-        dy = -1;
-
-    enum {tam = 5};
-    Elemento * vet[tam] = {amb->hero, amb->wall, amb->enemy, amb->trap, amb->ball};
-    int i = 0;
-    for(; i < tam; i++)
-        update_one(vet[i], dx, dy);
-
-#endif// _UPDATE_MOVE_
+    (void) amb;
 }
 
 /*                           _HADOUKEN_
@@ -1030,79 +782,9 @@ Ajuda:
 
 */
 
-#ifdef _HADOUKEN_
-void get_directions(char face, int *dx, int *dy){
-    if (face == '>'){
-        *dx = 1;
-        *dy = 0;
-    }
-    if (face == '<'){
-        *dx = -1;
-        *dy = 0;
-    }
-    if (face == 'A'){
-        *dx = 0;
-        *dy = -1;
-    }
-    if (face == 'V'){
-        *dx = 0;
-        *dy = 1;
-    }
-}
-#endif
+
 void elem_hadouken(Ambiente * amb){
-#ifdef _HADOUKEN_
-    Elemento * vet[3] = {amb->wall, amb->enemy, amb->trap};
-    Elemento * b = amb->ball;
-    Elemento * h = amb->hero;
-    if(b->exists == True){
-        if(h->x == b->x && h->y == b->y){
-            elem_move(h, Stay);
-            b->exists = False;
-        }
-    }
-    else{
-        int i = 0;
-        int dx = 0;
-        int dy = 0;
-        get_directions(h->face, &dx, &dy);
-        int pow = hadouken_power;
-        *b = elem_create(h->x + dx * pow, h->y + dy * pow, 'o', 'y', pow);
-        for(i = 0; i < 3; i++){
-            if(vet[i]->exists){
-                Elemento * e = vet[i];
-                if(e->y == h->y){
-                    if(h->face == '>' && (e->x > h->x) && (e->x < h->x + pow)){
-                        e->x += 2 * dx * (pow + 1);
-                        e->power -= 2 * pow;
-                        if(e->power <= 0)
-                            e->exists = 0;
-                    }
-                    if(h->face == '<' && (e->x < h->x) && (e->x > h->x - pow)){
-                        e->x += -2 * (pow + 1);
-                        e->power -= 2 * pow;
-                        if(e->power <= 0)
-                            e->exists = 0;
-                    }
-                }
-                else if(e->x == h->x){
-                    if(h->face == 'V' && (e->y > h->y) && (e->y < h->y + pow)){
-                        e->y += 2 * dy * (pow + 1);
-                        e->power -= 2 * pow;
-                        if(e->power <= 0)
-                            e->exists = 0;
-                    }
-                    if(h->face == 'A' && (e->y < h->y) && (e->y > h->y - pow)){
-                        e->y += -2 * dy * (pow + 1);
-                        e->power -= 2 * pow;
-                        if(e->power <= 0)
-                            e->exists = 0;
-                    }
-                }
-            }
-        }
-    }
-#endif
+    (void) amb;
 }
 
 
