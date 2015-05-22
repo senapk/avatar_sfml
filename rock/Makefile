@@ -1,4 +1,4 @@
 all:
-	gcc -Wall tk.c aluno.c game.c -o aluno -lncurses
+	gcc -Wall csf.c aluno.c game.c -o aluno -lcsfml-graphics -lcsfml-audio
 clean:
 	rm aluno

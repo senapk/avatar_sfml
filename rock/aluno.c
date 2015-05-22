@@ -4,16 +4,25 @@
 
 #define _MOVE_
 #define _INPUT_
+
 #define _CREATE_
 #define _CREATE_WALL_
+
 #define _COLIDE_
 #define _COLIDE_WALL_
+
 #define _KICK_
+
 #define _CREATE_TRAP_
+
 #define _COLIDE_TRAP_
+
 #define _CREATE_ENEMY_
+
 #define _COLIDE_ENEMY_
+
 #define _PURSUIT_
+
 #define _UPDATE_MOVE_
 #define _HADOUKEN_
 
@@ -440,8 +449,9 @@ void elem_colide_wall(Elemento *elem, Elemento wall){
             elem->y = elem->yold;
         }
     }
-}
+
 #endif// _COLIDE_WALL_
+}
 
 /*                           _INTERACTIONS_
 
@@ -492,7 +502,7 @@ void process_interactions(Ambiente * amb){
 #endif
 
 #ifdef _UPDATE_MOVE_
-    //update_move(amb);
+    update_move(amb);
 #endif
 
 }
@@ -629,8 +639,8 @@ void elem_create_trap(Elemento * hero, Elemento * trap){
     }else if(hero->face == 'V'){
         *trap = elem_create(x, y - 1, '!', 'w', f);
     }
-}
 #endif
+}
 
 /*                           _COLIDE_TRAP_
 
@@ -682,7 +692,6 @@ void elem_colide_trap(Elemento *elem, Elemento *trap){
         }
     }
 #endif//_COLIDE_TRAP_
-
 }
 
 /*                           _CREATE_ENEMY_
@@ -930,9 +939,10 @@ void update_move(Ambiente * amb){
     else if(y >= max_linhas)
         dy = -1;
 
-    Elemento * vet[5] = {amb->hero, amb->wall, amb->enemy, amb->trap, amb->ball};
+    enum {tam = 5};
+    Elemento * vet[tam] = {amb->hero, amb->wall, amb->enemy, amb->trap, amb->ball};
     int i = 0;
-    for(; i < 4; i++)
+    for(; i < tam; i++)
         update_one(vet[i], dx, dy);
 
 #endif// _UPDATE_MOVE_
@@ -1020,7 +1030,7 @@ Ajuda:
 
 */
 
-
+#ifdef _HADOUKEN_
 void get_directions(char face, int *dx, int *dy){
     if (face == '>'){
         *dx = 1;
@@ -1039,6 +1049,7 @@ void get_directions(char face, int *dx, int *dy){
         *dy = 1;
     }
 }
+#endif
 void elem_hadouken(Ambiente * amb){
 #ifdef _HADOUKEN_
     Elemento * vet[3] = {amb->wall, amb->enemy, amb->trap};

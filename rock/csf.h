@@ -3,20 +3,31 @@
 
 #include <SFML/Graphics.h>
 #include <SFML/Audio.h>
+#include <stdarg.h>
 
 //inicia uma janela com uma tamanho de celula e a quantida
-sfRenderWindow * iniciar(int _cell, int sizeX, int sizeY);
-void finalizar();
+sfRenderWindow * tk_init(int _cell, int sizeX, int sizeY);
+void tk_end();
 
-void drawRect(float x, float y, sfColor cor);
+//pega um codigo asc de tecla lowercase, numero e pontuacao
+//ou 0
+int tk_peek();
+
+int tk_is_open();
+
+void tk_display();
+void tk_clear();
+//void tk_color(char c)
+
+void tk_rect(float x, float y, sfColor cor);
 
 //desenha o texto uma letra por celula
-void drawText(float x, float y, const char * meutexto);
+void tk_draw(float x, float y, const char * format, ...);
 //escreve um texto
-void writeText(float x, float y, const char * meutexto);
+void tk_write(float x, float y, const char * format, ...);
 //coloca uma letra dentro de uma celula
-void drawChar(float x, float y, char letra);
+void tk_char(float x, float y, char letra);
 
-void playSound(const char * path);
+void tk_play(const char * path);
 
 #endif // CSF_H
