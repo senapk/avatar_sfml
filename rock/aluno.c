@@ -115,6 +115,7 @@ Ajuda:
 void elem_move(Elemento * el, direcao dir){
 
     el->xold = el->x;
+    //el->yold = ...
     if(dir == Left)
         el->x -= 1;
 }
@@ -152,8 +153,7 @@ Retorno:
 
 Ajuda:
 
-    Pra lhe ajudar eu já processei a tecla 'a'. Sugiro trocar o if por um
-    switch.
+    Pra lhe ajudar eu já processei a tecla 'a' e '.'.
 */
 
 boolean process_input(Elemento * hero, char tecla, Ambiente * amb){
@@ -163,8 +163,11 @@ boolean process_input(Elemento * hero, char tecla, Ambiente * amb){
         hero->face = '<';
         return True;
     }
+    if(tecla == '.'){
+        elem_move(hero, Stay); //o heroi nao muda de face
+        return True;
+    }
     return False;
-
 }
 
 /*                           _CREATE_
@@ -183,13 +186,13 @@ Função:
     Crie uma variável Elemento. Atribuia a ela os valores passados por parametro.
     Após isso retorne o Elemento construído.
     As variáveis que faltaram passar por parametro defina assim:
-        exists = True
-        xold = x
-        yold = y
+        elem.exists = True
+        elem.xold = x
+        elem.yold = y
 
 Ajuda:
 
-    Estou criando e retornando um Elemento vazio.
+    Estou criando e retornando um Elemento vazio e preenchendo com x e xold
 
 */
 Elemento elem_create(int x, int y, char face, char color, int power){
@@ -198,10 +201,12 @@ Elemento elem_create(int x, int y, char face, char color, int power){
     (void) face;
     (void) color;
     (void) power;
-
-    Elemento obj;
-    return obj;
-
+    Elemento elem; //o objetivo é preencher e retornar esse elemento com
+                   //os dados corretos, preencha todas as caracteristicas!
+                   //Voce pode apagar os (void) acima!
+    elem.x = x;
+    elem.xold = x;
+    return elem;
 }
 
 /*                           _CREATE_WALL_
@@ -245,9 +250,17 @@ Ajuda:
     elementos do cenário. Em process_input amb->wall contém um ponteiro para
     parede.
 
-    Na função process_input eh só adicionar
-       elem_create_wall(hero, amb->wall);
-    caso a tecla seja ';'
+    *wall vai conter o valor de elem_create com os valores adaquados
+    *wall = elem_create(hero->x, ...
+
+    Na função process_input você precisa chamar a função e passar os parâmetros.
+    Se a
+
+    if(tecla == ';'){
+        elem_create_wall(hero, amb->wall);
+        return True;
+    }
+
 
 Futuro:
 
@@ -257,6 +270,8 @@ Futuro:
 */
 
 void elem_create_wall(Elemento * hero, Elemento * wall){
+    //*wall = elem_create(hero->x, ..., '#', ...); //preencha os ...
+    //elem_move(..., STAY); //preencha o ...
     (void) hero;
     (void) wall;
 }
@@ -294,8 +309,10 @@ Futuro:
 boolean elem_colide(Elemento um, Elemento dois){
     (void) um;
     (void) dois;
-    return False;
 
+    //if(um.x == ...)
+
+    return False;
 }
 
 /*                           _COLIDE_WALL_
@@ -364,7 +381,6 @@ Ajuda:
 void process_interactions(Ambiente * amb){
 
     //funcoes de movimento
-
 
     elem_colide_wall(amb->hero, *amb->wall);
 
