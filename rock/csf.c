@@ -12,6 +12,8 @@ static int _cell = 20;
 
 sfRenderWindow * tk_init(int cell, int sizeX, int sizeY)
 {
+    const char * path = "/usr/share/fonts/truetype/droid/DroidSansMono.ttf";
+
     _cell = cell;
     sfVideoMode mode = {_cell * sizeX, _cell * sizeY, 32};
     _janela = sfRenderWindow_create(mode, "SFML window", sfResize | sfClose, NULL);
@@ -19,7 +21,7 @@ sfRenderWindow * tk_init(int cell, int sizeX, int sizeY)
     if (!_janela)
         return NULL;
 
-    _font = sfFont_createFromFile("../rock/inconsolata.otf");
+    _font = sfFont_createFromFile(path);
     if (!_font)
         return NULL;
     _text = sfText_create();
